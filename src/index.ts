@@ -50,7 +50,7 @@ const main = async () => {
         const result = await uploadImage(imageFilePath, schemas, spinner);
         if (result.isErr()) {
           spinner.warn(
-            `==========\n❌ Failed to upload ${imageFilePath}\nError: ${result.error.message}\n==========\n\n`
+            `========================================\n❌ Failed to upload ${imageFilePath}\nError: ${result.error.message}\n========================================\n\n`
           );
         }
       })
