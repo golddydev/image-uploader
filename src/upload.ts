@@ -45,6 +45,12 @@ const uploadImage = async (
   const pinataSDK = getPinataSDK();
 
   const file = new File([blob], filename, { type: mimeType });
+
+  // check file's size
+  if (file.size > 5 * 1024 * 1024) {
+    return err(new Error("File is bigger than 5MB"));
+  }
+
   const uploadResult = await ResultAsync.fromThrowable(
     async () => {
       const upload = await pinataSDK.upload.public.file(file);
