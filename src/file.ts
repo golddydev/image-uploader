@@ -40,6 +40,9 @@ const analyzeFile = async (
   if (!mimeType) {
     return err(new Error("Failed to get mime type"));
   }
+  if (!mimeType.startsWith("image/")) {
+    return err(new Error("File is not an image"));
+  }
 
   // get hash of file
   const hashResult = await ResultAsync.fromThrowable(
