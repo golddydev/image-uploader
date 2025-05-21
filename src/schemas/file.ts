@@ -10,10 +10,11 @@ const createModel = (papr: Papr) =>
       {
         name: types.string({ required: true }),
         path: types.string({ required: true }),
-        size: types.number({ required: true }),
         mimeType: types.string({ required: true }),
+        size: types.number({ required: true }),
         hash: types.string({ required: true }),
         cid: types.string({ required: true }),
+        url: types.string({ required: true }),
       },
       {
         timestamps: true,

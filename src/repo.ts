@@ -25,21 +25,23 @@ const updateFileName = ResultAsync.fromThrowable(
 
 const createFile = ResultAsync.fromThrowable(
   async (
-    path: string,
     name: string,
-    hash: string,
-    cid: string,
+    path: string,
     mimeType: string,
     size: number,
+    hash: string,
+    cid: string,
+    url: string,
     fileSchema: Schema
   ) => {
     const file = await fileSchema.insertOne({
-      path,
       name,
-      hash,
-      cid,
+      path,
       mimeType,
       size,
+      hash,
+      cid,
+      url,
     });
     return file;
   },

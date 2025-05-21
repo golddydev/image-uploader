@@ -42,10 +42,12 @@ const uploadImage = async (
   }
 
   // upload image
+  const pinataSDK = getPinataSDK();
+
   const file = new File([blob], filename, { type: mimeType });
   const uploadResult = await ResultAsync.fromThrowable(
     async () => {
-      const upload = await getPinataSDK().upload.public.file(file);
+      const upload = await pinataSDK.upload.public.file(file);
       return upload;
     },
     (error) => new Error(`Failed to upload image. ${convertError(error)}`)
@@ -57,13 +59,15 @@ const uploadImage = async (
   spinner.info(`✅ Uploaded ${filename}\n`);
 
   // create file document on database
+  const baseUrl = getPinataSDK().config?.pinataGateway ?? "https://ipfs.io";
   const createFileResult = await createFile(
-    imageFilePath,
     filename,
-    hash,
-    upload.cid,
+    imageFilePath,
     mimeType,
     upload.size,
+    hash,
+    upload.cid,
+    `${baseUrl}/ipfs/${upload.cid}`,
     schemas.file
   );
   if (createFileResult.isErr()) {
