@@ -1,6 +1,8 @@
 import {
   BatchWriteItemCommand,
   BatchWriteItemCommandOutput,
+  GetItemCommand,
+  GetItemCommandOutput,
   PutItemCommand,
   PutItemCommandOutput,
   WriteRequest,
@@ -27,6 +29,17 @@ export const putItem = async (item: Item): Promise<PutItemCommandOutput> => {
       ipfsCid: { S: item.ipfsCid },
       ipfsUrl: { S: item.ipfsUrl },
     },
+  });
+
+  return await client.send(command);
+};
+
+export const getItem = async (name: string): Promise<GetItemCommandOutput> => {
+  const client = getDynamoDBClient();
+
+  const command = new GetItemCommand({
+    TableName: TABLE_NAME,
+    Key: { name: { S: name } },
   });
 
   return await client.send(command);
