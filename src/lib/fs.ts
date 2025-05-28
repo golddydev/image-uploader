@@ -6,7 +6,7 @@ import convertError from "./error.js";
 
 const readAllImageFiles = ResultAsync.fromThrowable(
   async () => {
-    const files = await fg.async("**/*.{png,jpg,jpeg,gif,webp}", {
+    const files = await fg.async("*.{png,jpg,jpeg,gif,webp}", {
       cwd: getEnvConfig().IMAGES_FOLDER_PATH,
       absolute: true,
     });

@@ -1,20 +1,21 @@
 import { fileTypeFromBuffer } from "file-type";
 import fs from "fs/promises";
-import { hash } from "hasha";
 import { err, ok, Result } from "neverthrow";
 import { ResultAsync } from "neverthrow";
 import path from "path";
 
 import convertError from "./lib/error.js";
 
-const analyzeFile = async (
+export interface AnalyzeFileResult {
+  filename: string;
+  file: File;
+  fileSize: number;
+  mimeType: string;
+}
+
+export const analyzeFile = async (
   filePath: string
-): Promise<
-  Result<
-    { filename: string; hash: string; blob: Blob; mimeType: string },
-    Error
-  >
-> => {
+): Promise<Result<AnalyzeFileResult, Error>> => {
   // parse path
   const filename = path.basename(filePath);
 
@@ -44,23 +45,13 @@ const analyzeFile = async (
     return err(new Error("File is not an image"));
   }
 
-  // get hash of file
-  const hashResult = await ResultAsync.fromThrowable(
-    () => hash(readableStream),
-    (error) => new Error(`Failed to hash file. ${convertError(error)}`)
-  )();
-  if (hashResult.isErr()) {
-    return err(hashResult.error);
-  }
-  const imageHash = hashResult.value;
+  const blob = new Blob([readableStream], { type: mimeType });
+  const file = new File([blob], filename, { type: mimeType });
 
-  // check database if there is hash or not
   return ok({
     filename,
-    hash: imageHash,
-    blob: new Blob([readableStream], { type: mimeType }),
+    file,
+    fileSize: file.size,
     mimeType,
   });
 };
-
-export { analyzeFile };
